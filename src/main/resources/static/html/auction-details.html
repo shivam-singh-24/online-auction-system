@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auction Detail | eAuction System</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+          margin: 0;
+          font-family: 'Segoe UI', sans-serif;
+          background-color: #eef2f7;
+        }
+        nav {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 16px 32px;
+          background-color: #0a1f44;
+          color: white;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        nav .logo {
+          display: flex;
+          align-items: center;
+        }
+        nav .logo img {
+          height: 60px;
+          margin-right: 12px;
+        }
+        nav .logo span {
+          font-size: 24px;
+          font-weight: bold;
+          color: #ffcc00;
+        }
+        nav div a {
+          margin-left: 20px;
+          text-decoration: none;
+          color: #ddd;
+          font-weight: 500;
+        }
+        nav div a:hover {
+          color: #ffffff;
+        }
+        .container {
+          max-width: 1000px;
+          margin: 40px auto;
+          padding: 0 20px;
+        }
+        .product-layout {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 40px;
+          margin-bottom: 40px;
+        }
+        .product-image img {
+          width: 100%;
+          max-height: 400px;
+          object-fit: cover;
+          border-radius: 8px;
+        }
+        .product-info h2 {
+          margin-top: 0;
+          font-size: 28px;
+          color: #0a1f44;
+        }
+        .product-info p {
+          font-size: 16px;
+          color: #555;
+          margin-bottom: 10px;
+        }
+        .interaction-card {
+          background: white;
+          padding: 24px;
+          border-radius: 8px;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+          margin-bottom: 60px;
+        }
+        .interaction-card h3 {
+          color: #0a1f44;
+          margin-top: 0;
+        }
+        .interaction-card input {
+          width: 100%;
+          padding: 10px;
+          margin-top: 10px;
+          margin-bottom: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+        }
+        .interaction-card button {
+          padding: 10px 16px;
+          background-color: #007bff;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-weight: bold;
+        }
+        .interaction-card button:hover {
+          background-color: #0056b3;
+        }
+        .interaction-card ul {
+          padding-left: 20px;
+          font-size: 15px;
+          color: #444;
+        }
+        footer {
+          background-color: #0a1f44;
+          color: #ccc;
+          padding: 30px 20px;
+          text-align: center;
+          font-size: 14px;
+        }
+        footer a {
+          color: #ffcc00;
+          text-decoration: none;
+          margin: 0 10px;
+        }
+        footer a:hover {
+          text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+          .product-layout {
+            grid-template-columns: 1fr;
+          }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">
+        <img src="/images/logo.png" alt="Logo">
+        <span>eAuction System</span>
+    </div>
+    <div>
+        <a href="/html/index.html">Home</a>
+        <a href="/html/auctions.html">All Auctions</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="product-layout">
+        <div class="product-image" id="product-image"></div>
+        <div class="product-info" id="product-info"></div>
+    </div>
+
+    <div class="interaction-card">
+        <h3>Place Your Bid</h3>
+        <input type="number" id="bid-amount" placeholder="Enter your bid amount">
+        <button onclick="placeBid()">Place Bid</button>
+
+        <h3 style="margin-top: 30px;">Bid History</h3>
+        <div id="bid-history"><em>Loading bid history...</em></div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2025 eAuction System. All rights reserved.</p>
+    <p>
+        <a href="#">About Us</a> |
+        <a href="#">Contact</a> |
+        <a href="#">Privacy Policy</a>
+    </p>
+</footer>
+
+<script>
+    const auctionId = new URLSearchParams(window.location.search).get("id");
+    let user = null;
+
+    try {
+      user = JSON.parse(localStorage.getItem("loggedInUser"));
+    } catch (e) {
+      console.warn("User not logged in or corrupted data");
+    }
+
+    fetch(`/api/auctions/${auctionId}`, { cache: "no-store" })
+      .then(res => res.json())
+      .then(data => {
+        const item = data.auction;
+        const winner = data.winner || "Not declared";
+
+        document.getElementById("product-image").innerHTML = `
+          <img src="${item.imageUrl || '/images/default.jpg'}" alt="${item.title}">
+        `;
+
+        document.getElementById("product-info").innerHTML = `
+          <h2>${item.title}</h2>
+          <p><strong>Description:</strong> ${item.description}</p>
+          <p><strong>Starting Price:</strong> ₹${item.startingPrice}</p>
+          <p><strong>Current Bid:</strong> ₹${item.currentBid}</p>
+          <p><strong>Ends:</strong> ${item.endTime ? new Date(item.endTime).toLocaleString() : "N/A"}</p>
+          <p><strong>Status:</strong> ${item.status}</p>
+          <p><strong>Seller:</strong> ${item.seller?.username || "Unknown"}</p>
+          <p><strong>Winner:</strong> ${winner}</p>
+        `;
+      })
+      .catch(err => {
+        console.error("Auction detail error:", err);
+        document.getElementById("product-info").innerHTML = "<p>Error loading auction details.</p>";
+      });
+
+    function loadBidHistory() {
+      fetch(`/api/auctions/${auctionId}/bids`)
+        .then(res => {
+          if (!res.ok) throw new Error("Failed to fetch bids");
+          return res.json();
+        })
+        .then(bids => {
+          if (!Array.isArray(bids) || bids.length === 0) {
+            document.getElementById("bid-history").innerHTML = "<p>No bids yet.</p>";
+            return;
+          }
+          const history = bids.map(b => {
+            const bidder = b.bidderUsername || "Unknown";
+            const amount = b.amount || "N/A";
+            const time = b.timestamp ? new Date(b.timestamp).toLocaleString() : "Unknown time";
+            return `<li>${bidder} bid ₹${amount} at ${time}</li>`;
+          }).join("");
+          document.getElementById("bid-history").innerHTML = `<ul>${history}</ul>`;
+        })
+        .catch(err => {
+          console.error("Bid history error:", err);
+          document.getElementById("bid-history").innerHTML = "<p>Error loading bid history.</p>";
+        });
+    }
+
+    loadBidHistory();
+
+    function placeBid() {
+      if (!user || !user.username) {
+        alert("Please login to place a bid.");
+        window.location.href = "/html/login.html";
+        return;
+      }
+
+      const amount = parseFloat(document.getElementById("bid-amount").value);
+      if (isNaN(amount) || amount <= 0) {
+        alert("Please enter a valid bid amount.");
+        return;
+      }
+
+      fetch(`/api/auctions/${auctionId}/bid`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount, username: user.username })
+      })
+        .then(res => {
+          if (!res.ok) return res.text().then(msg => { throw new Error(msg); });
+          return res.json();
+        })
+        .then(data => {
+          alert(`Bid placed successfully for ₹${amount}`);
+          document.getElementById("bid-amount").value = "";
+          loadBidHistory();
+        })
+        .catch(err => alert("Bid failed: " + err.message));
+    }
+</script>
+
+</body>
+</html>

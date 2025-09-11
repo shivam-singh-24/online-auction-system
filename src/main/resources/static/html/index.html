@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>eAuction System | Home</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+          margin: 0;
+          font-family: 'Segoe UI', sans-serif;
+          background-color: #eef2f7;
+        }
+
+        nav {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 16px 32px;
+          background-color: #0a1f44;
+          color: white;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        nav .logo {
+          display: flex;
+          align-items: center;
+        }
+
+        nav .logo img {
+          height: 60px;
+          margin-right: 12px;
+        }
+
+        nav .logo span {
+          font-size: 24px;
+          font-weight: bold;
+          color: #ffcc00;
+        }
+
+        nav div a {
+          margin-left: 20px;
+          text-decoration: none;
+          color: #ddd;
+          font-weight: 500;
+        }
+
+        nav div a:hover {
+          color: #ffffff;
+        }
+
+        .hero {
+          background: linear-gradient(to right, #0a1f44, #1e3c72);
+          color: white;
+          text-align: center;
+          padding: 100px 20px;
+        }
+
+        .hero h1 {
+          font-size: 48px;
+          font-weight: bold;
+          margin-bottom: 10px;
+        }
+
+        .hero p {
+          font-size: 20px;
+          margin-bottom: 30px;
+        }
+
+        .cta-buttons a {
+          display: inline-block;
+          margin: 0 10px;
+          padding: 12px 24px;
+          background-color: #ffcc00;
+          color: #0a1f44;
+          text-decoration: none;
+          border-radius: 5px;
+          font-weight: bold;
+        }
+
+        .cta-buttons a:hover {
+          background-color: #ffc107;
+        }
+
+        .carousel-section {
+          max-width: 1000px;
+          margin: 60px auto;
+          padding: 0 20px;
+          position: relative;
+        }
+
+        .carousel-section h2 {
+          font-size: 28px;
+          margin-bottom: 20px;
+          color: #0a1f44;
+          text-align: center;
+        }
+
+        .carousel-wrapper {
+          overflow: hidden;
+        }
+
+        .carousel-track {
+          display: flex;
+          gap: 20px;
+          transition: transform 0.5s ease;
+        }
+
+        .carousel-card {
+          flex: 0 0 300px;
+          background: white;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          padding: 16px;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+          text-align: center;
+        }
+
+        .carousel-card img {
+          width: 100%;
+          height: 180px;
+          object-fit: cover;
+          border-radius: 6px;
+          margin-bottom: 10px;
+        }
+
+        .carousel-card h3 {
+          margin: 0;
+          font-size: 18px;
+          color: #222;
+        }
+
+        .carousel-card p {
+          font-size: 14px;
+          color: #555;
+          margin: 6px 0;
+        }
+
+        .carousel-card a {
+          display: inline-block;
+          margin-top: 10px;
+          padding: 8px 12px;
+          background-color: #007bff;
+          color: white;
+          text-decoration: none;
+          border-radius: 4px;
+          font-weight: bold;
+        }
+
+        .carousel-card a:hover {
+          background-color: #0056b3;
+        }
+
+        .arrow {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          background-color: rgba(0,0,0,0.5);
+          color: white;
+          border: none;
+          font-size: 24px;
+          padding: 10px;
+          cursor: pointer;
+          z-index: 10;
+          border-radius: 50%;
+        }
+
+        .arrow-left {
+          left: -10px;
+        }
+
+        .arrow-right {
+          right: -10px;
+        }
+
+        footer {
+          background-color: #0a1f44;
+          color: #ccc;
+          padding: 30px 20px;
+          text-align: center;
+          font-size: 14px;
+          margin-top: 60px;
+        }
+
+        footer a {
+          color: #ffcc00;
+          text-decoration: none;
+          margin: 0 10px;
+        }
+
+        footer a:hover {
+          text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">
+        <img src="/images/logo.png" alt="Logo">
+        <span>eAuction System</span>
+    </div>
+    <div>
+        <a href="/html/login.html">Login</a>
+        <a href="/html/register.html">Register</a>
+        <a href="/html/auctions.html">View Auctions</a>
+    </div>
+</nav>
+
+<section class="hero">
+    <h1>India’s Trusted Auction Platform</h1>
+    <p>Bid on premium assets from verified sellers across the country</p>
+    <div class="cta-buttons">
+        <a href="/html/auctions.html">Explore Auctions</a>
+        <a href="/html/register.html">Join Now</a>
+    </div>
+</section>
+
+<section class="carousel-section">
+    <h2>Featured Auctions</h2>
+    <button class="arrow arrow-left" onclick="slideLeft()">&#10094;</button>
+    <button class="arrow arrow-right" onclick="slideRight()">&#10095;</button>
+    <div class="carousel-wrapper">
+        <div class="carousel-track" id="carousel-track">
+            <p>Loading auctions...</p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2025 eAuction System. All rights reserved.</p>
+    <p>
+        <a href="#">About Us</a> |
+        <a href="#">Contact</a> |
+        <a href="#">Privacy Policy</a>
+    </p>
+</footer>
+
+<script>
+    let currentIndex = 0;
+    let auctionCount = 0;
+
+    fetch("/api/auctions/active")
+      .then(res => res.json())
+      .then(data => {
+        const track = document.getElementById("carousel-track");
+        track.innerHTML = "";
+        auctionCount = data.length;
+
+        data.forEach(item => {
+          const card = document.createElement("div");
+          card.className = "carousel-card";
+          card.innerHTML = `
+            <img src="${item.imageUrl}" alt="${item.title}">
+            <h3>${item.title}</h3>
+            <p>${item.description}</p>
+            <p><strong>Current Bid:</strong> ₹${item.currentBid}</p>
+            <p><strong>Ends:</strong> ${new Date(item.endTime).toLocaleString()}</p>
+            <a href="/html/auction-details.html?id=${item.id}">View Details</a>
+          `;
+          track.appendChild(card);
+        });
+
+        setInterval(() => {
+          slideRight();
+        }, 4000);
+      })
+      .catch(err => {
+        document.getElementById("carousel-track").innerHTML = "<p>Error loading auctions.</p>";
+        console.error("Auction fetch error:", err);
+      });
+
+    function slideRight() {
+      currentIndex = (currentIndex + 1) % auctionCount;
+      document.getElementById("carousel-track").style.transform = `translateX(-${currentIndex * 320}px)`;
+    }
+
+    function slideLeft() {
+      currentIndex = (currentIndex - 1 + auctionCount) % auctionCount;
+      document.getElementById("carousel-track").style.transform = `translateX(-${currentIndex * 320}px)`;
+    }
+</script>
+
+</body>
+</html>

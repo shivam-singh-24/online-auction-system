@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Auctions | eAuction System</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+          margin: 0;
+          font-family: 'Segoe UI', sans-serif;
+          background-color: #eef2f7;
+        }
+
+        nav {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 16px 32px;
+          background-color: #0a1f44;
+          color: white;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        nav .logo {
+          display: flex;
+          align-items: center;
+        }
+
+        nav .logo img {
+          height: 60px;
+          margin-right: 12px;
+        }
+
+        nav .logo span {
+          font-size: 24px;
+          font-weight: bold;
+          color: #ffcc00;
+        }
+
+        nav .nav-links a {
+          margin-left: 20px;
+          text-decoration: none;
+          color: #ddd;
+          font-weight: 500;
+        }
+
+        nav .nav-links a:hover {
+          color: #ffffff;
+        }
+
+        #user-info {
+          font-weight: bold;
+          color: #ffcc00;
+          margin-left: 20px;
+        }
+
+        #logout-btn {
+          margin-left: 10px;
+          padding: 6px 12px;
+          background-color: #ff4d4d;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          font-weight: bold;
+          cursor: pointer;
+          display: none;
+        }
+
+        .auction-section {
+          padding: 40px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .auction-section h2 {
+          color: #0a1f44;
+          margin-bottom: 30px;
+          font-size: 28px;
+        }
+
+        .auction-list {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 20px;
+          justify-content: center;
+        }
+
+        .auction-card-link {
+          text-decoration: none;
+          color: inherit;
+        }
+
+        .auction-card {
+          background: white;
+          border: 1px solid #ccc;
+          padding: 16px;
+          border-radius: 8px;
+          max-width: 400px;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+          transition: transform 0.2s ease;
+        }
+
+        .auction-card:hover {
+          transform: scale(1.02);
+        }
+
+        .auction-card img {
+          width: 100%;
+          max-height: 200px;
+          object-fit: cover;
+          border-radius: 6px;
+          margin-bottom: 10px;
+        }
+
+        .auction-card h3 {
+          margin: 0 0 10px;
+          color: #222;
+        }
+
+        .auction-card p {
+          font-size: 15px;
+          color: #555;
+          margin-bottom: 6px;
+        }
+
+        footer {
+          background-color: #0a1f44;
+          color: #ccc;
+          padding: 30px 20px;
+          text-align: center;
+          font-size: 14px;
+          margin-top: 60px;
+        }
+
+        footer a {
+          color: #ffcc00;
+          text-decoration: none;
+          margin: 0 10px;
+        }
+
+        footer a:hover {
+          text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">
+        <img src="/images/logo.png" alt="Logo">
+        <span>eAuction System</span>
+    </div>
+    <div class="nav-links">
+        <a href="/html/index.html">Home</a>
+        <a href="/html/auctions.html">Auctions</a>
+        <a href="/html/login.html">Login</a>
+        <a href="/html/register.html">Register</a>
+        <a href="/html/admin-extend.html" id="admin-link" style="display:none;">Admin Panel</a>
+        <span id="user-info"></span>
+        <button id="logout-btn" onclick="logout()">Logout</button>
+    </div>
+</nav>
+
+<div class="auction-section">
+    <h2>Live Auctions</h2>
+    <div class="auction-list" id="auction-list">
+        <!-- Auction items will be loaded here -->
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2025 eAuction System. All rights reserved.</p>
+    <p>
+        <a href="#">About Us</a> |
+        <a href="#">Contact</a> |
+        <a href="#">Terms & Conditions</a>
+    </p>
+</footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      let user = null;
+      try {
+        user = JSON.parse(localStorage.getItem("loggedInUser"));
+      } catch (e) {
+        console.warn("User not logged in or corrupted data");
+      }
+
+      const userInfo = document.getElementById("user-info");
+      const logoutBtn = document.getElementById("logout-btn");
+      const adminLink = document.getElementById("admin-link");
+
+      if (user?.username) {
+        userInfo.innerText = `Logged in as: ${user.username}`;
+        logoutBtn.style.display = "inline-block";
+
+        if (user.username === "Shivam" && user.role === "ADMIN") {
+          adminLink.style.display = "inline-block";
+        }
+      } else {
+        userInfo.innerText = "";
+        logoutBtn.style.display = "none";
+        adminLink.style.display = "none";
+      }
+
+      fetch("/api/auctions/all")
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById("auction-list");
+          container.innerHTML = "";
+
+          if (!Array.isArray(data) || data.length === 0) {
+            container.innerHTML = "<p>No auctions available.</p>";
+            return;
+          }
+
+          data.forEach(item => {
+            const card = document.createElement("div");
+            card.className = "auction-card";
+            if (item.status === "CLOSED") {
+              card.style.opacity = "0.6";
+            }
+
+            card.innerHTML = `
+              <a href="/html/auction-details.html?id=${item.id}" class="auction-card-link">
+                <div>
+                  <img src="${item.imageUrl || '/images/default.jpg'}" alt="${item.title}">
+                  <h3>${item.title}</h3>
+                  <p>${item.description}</p>
+                  <p><strong>Current Bid:</strong> ₹${item.currentBid}</p>
+                  <p><strong>Ends:</strong> ${new Date(item.endTime).toLocaleString()}</p>
+                  <p><strong>Status:</strong> <span style="color:${item.status === 'CLOSED' ? '#ff4d4d' : '#28a745'}">${item.status}</span></p>
+                </div>
+              </a>
+            `;
+            container.appendChild(card);
+          });
+        })
+        .catch(err => {
+          document.getElementById("auction-list").innerHTML = "<p>Error loading auctions.</p>";
+          console.error("Auction fetch error:", err);
+        });
+    });
+
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "/html/login.html";
+    }
+</script>
+
+
+
+
+
+</body>
+</html>

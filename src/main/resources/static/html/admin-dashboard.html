@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<h2>Admin Dashboard</h2>
+<div>
+    <button onclick="loadUsers()">View Users</button>
+    <button onclick="loadAuctions()">View Auctions</button>
+</div>
+
+<div id="admin-data"></div>
+<button onclick="declareWinner(${auction.id})">Declare Winner</button>
+
+
+<script src="/js/admin.js"></script>
+</body>
+</html>

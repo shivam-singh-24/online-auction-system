@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Auction Item</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<nav>
+    <h1>Online Auction</h1>
+    <div>
+        <a href="/html/index.html">Home</a>
+        <a href="/html/auctions.html">All Auctions</a>
+    </div>
+</nav>
+
+<div class="form-box">
+    <h2>Add Auction Item</h2>
+    <input type="text" id="title" placeholder="Item Title">
+    <textarea id="description" placeholder="Item Description"></textarea>
+    <input type="number" id="startingPrice" placeholder="Starting Price (₹)">
+    <input type="datetime-local" id="startTime">
+    <input type="datetime-local" id="endTime">
+    <input type="number" id="sellerId" placeholder="Seller ID">
+    <button onclick="submitAuction()">Create Auction</button>
+</div>
+
+<script>
+    function submitAuction() {
+      const auction = {
+        title: document.getElementById("title").value,
+        description: document.getElementById("description").value,
+        startingPrice: parseFloat(document.getElementById("startingPrice").value),
+        startTime: document.getElementById("startTime").value,
+        endTime: document.getElementById("endTime").value,
+        status: "ACTIVE",
+        seller: {
+          id: parseInt(document.getElementById("sellerId").value)
+        }
+      };
+
+      fetch("/api/auctions/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(auction)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Auction creation failed");
+        return res.json();
+      })
+      .then(data => {
+        alert("Auction created successfully!");
+        window.location.href = "/html/auctions.html";
+      })
+      .catch(err => alert(err.message));
+    }
+</script>
+
+</body>
+</html>
