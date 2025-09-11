@@ -62,3 +62,15 @@ src/ ├── main/
 ```text
 Username: admin
 Password: 1234
+
+📌 To-Do / Future Enhancements
+✅ Email notifications for winners
+
+✅ Pagination for auction listings
+
+✅ Real-time bidding with WebSocket
+
+✅ Mobile responsiveness
+
+🙌 Author
+Shivam Singh 📍 Noida, India 💼 Full-stack Developer | Java | Spring Boot | SQL | UI/UX
