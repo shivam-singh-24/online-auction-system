@@ -29,16 +29,16 @@ A full-stack web application for managing online auctions, built with **Spring B
 
 ## 📁 Folder Structure
 
-src/ ├── main/ <hr>
-│ ├── java/com/auction/
-│ │ ├── controller/
-│ │ ├── model/ 
-│ │ ├── repository/ 
-│ │ ├── service/
-│ ├── resources/
-│ │ ├── static/html/ 
-│ │ ├── static/css/ 
-│ │ ├── application.properties
+src/ ├── main/ <br>
+│ ├── java/com/auction/  <br>
+│ │ ├── controller/ <br>
+│ │ ├── model/  <br>
+│ │ ├── repository/  <br>
+│ │ ├── service/ <br>
+│ ├── resources/ <br>
+│ │ ├── static/html/  <br>
+│ │ ├── static/css/  <br>
+│ │ ├── application.properties <br>
 
 ---
 
@@ -74,4 +74,5 @@ Password: 1234
 
 🙌 Author
 Shivam Singh 📍 Noida, India 💼 Full-stack Developer | Java | Spring Boot | SQL | UI/UX
+
 
