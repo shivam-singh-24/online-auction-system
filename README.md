@@ -72,11 +72,12 @@ Password: 1234
 
 ✅ Mobile responsiveness
 
-🙌 Author
-Shivam Singh
-Contach - shivamsingh.tech24@gmail.com
+ 🙌 Author
+ Shivam Singh
+ Contact - shivamsingh.tech24@gmail.com
 📍 Noida, India
  💼 Full-stack Developer | Java | Spring Boot | SQL | UI/UX
+
 
 
 
